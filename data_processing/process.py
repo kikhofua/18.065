@@ -104,10 +104,13 @@ def prepare_data(lang1, lang2, reverse=False):
     return input_lang, output_lang, pairs
 
 
-""""----------------------------- NOW PREPARE FOR TRAINING --------------------------------""""
+# ----------------------------- NOW PREPARE FOR TRAINING -------------------------------- #
+
 """ For each pair, we create an input tensor (indexes of the words in the input sentence) and 
     a target tensor (indexes of the words in the target sentence).
     We append EOS_token to both sequences."""
+
+
 def indexes_from_sentence(lang, sentence):
     return [lang.word2index[word] for word in sentence.split(' ')]
 
@@ -121,15 +124,21 @@ def variable_from_sentence(lang, sentence):
     else:
         return result
 
-def variables_from_pair(pair):
+
+def variables_from_pair(pair, input_lang, output_lang):
     input_variable = variable_from_sentence(input_lang, pair[0])
     target_variable = variable_from_sentence(output_lang, pair[1])
     return input_variable, target_variable
 
 
-if __name__ == "__main__":
-    input_lang, output_lang, pairs = prepare_data('eng', 'spa', True)
-    print(random.choice(pairs))
+# def run():
+#     input_lang, output_lang, pairs = prepare_data('eng', 'spa', True)
+#     print(random.choice(pairs))
+
+
+# if __name__ == "__main__":
+#     input_lang, output_lang, pairs = prepare_data('eng', 'spa', True)
+#     print(random.choice(pairs))
 
 
 
