@@ -2,14 +2,14 @@ from __future__ import unicode_literals, print_function, division
 from io import open
 import unicodedata
 import re
-import random
 
 import torch
+import torch.utils.data
 from torch.autograd import Variable
-
 
 SOS_token = 0  # Start of sentence
 EOS_token = 1  # End of sentence
+
 use_cuda = torch.cuda.is_available()
 
 
@@ -78,11 +78,19 @@ def read_langs(lang1, lang2, reverse=False):
     return input_lang, output_lang, pairs
 
 
-MAX_LENGTH = 30  # allows us to trim the dataset to include sentences no longer than MAX_LENGTH for speedy training
+MAX_LENGTH = 10  # allows us to trim the dataset to include sentences no longer than MAX_LENGTH for speedy training
+eng_prefixes = (
+    "i am ", "i m ",
+    "he is", "he s ",
+    "she is", "she s",
+    "you are", "you re ",
+    "we are", "we re ",
+    "they are", "they re "
+)
 
 
 def filter_pair(p):
-    return len(p[0].split(" ")) < MAX_LENGTH and len(p[1].split(" ")) < MAX_LENGTH
+    return len(p[0].split(" ")) < MAX_LENGTH and len(p[1].split(" ")) < MAX_LENGTH and p[1].startswith(eng_prefixes)
 
 
 def filter_pairs(pairs):
@@ -115,7 +123,7 @@ def indexes_from_sentence(lang, sentence):
     return [lang.word2index[word] for word in sentence.split(' ')]
 
 
-def variable_from_sentence(lang, sentence):
+def tensor_from_sentence(lang, sentence):
     indexes = indexes_from_sentence(lang, sentence)
     indexes.append(EOS_token)
     result = Variable(torch.LongTensor(indexes).view(-1, 1))
@@ -125,20 +133,11 @@ def variable_from_sentence(lang, sentence):
         return result
 
 
-def variables_from_pair(pair, input_lang, output_lang):
-    input_variable = variable_from_sentence(input_lang, pair[0])
-    target_variable = variable_from_sentence(output_lang, pair[1])
-    return input_variable, target_variable
+def tensor_from_pair(pair, input_lang, output_lang):
+    input_tensor = tensor_from_sentence(input_lang, pair[0])
+    target_tensor = tensor_from_sentence(output_lang, pair[1])
+    return input_tensor, target_tensor
 
-
-# def run():
-#     input_lang, output_lang, pairs = prepare_data('eng', 'spa', True)
-#     print(random.choice(pairs))
-
-
-# if __name__ == "__main__":
-#     input_lang, output_lang, pairs = prepare_data('eng', 'spa', True)
-#     print(random.choice(pairs))
 
 
 
