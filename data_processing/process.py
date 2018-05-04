@@ -123,7 +123,7 @@ def indexes_from_sentence(lang, sentence):
     return [lang.word2index[word] for word in sentence.split(' ')]
 
 
-def tensor_from_sentence(lang, sentence):
+def variable_from_sentence(lang, sentence):
     indexes = indexes_from_sentence(lang, sentence)
     indexes.append(EOS_token)
     result = Variable(torch.LongTensor(indexes).view(-1, 1))
@@ -133,9 +133,9 @@ def tensor_from_sentence(lang, sentence):
         return result
 
 
-def tensor_from_pair(pair, input_lang, output_lang):
-    input_tensor = tensor_from_sentence(input_lang, pair[0])
-    target_tensor = tensor_from_sentence(output_lang, pair[1])
+def variable_from_pair(pair, input_lang, output_lang):
+    input_tensor = variable_from_sentence(input_lang, pair[0])
+    target_tensor = variable_from_sentence(output_lang, pair[1])
     return input_tensor, target_tensor
 
 

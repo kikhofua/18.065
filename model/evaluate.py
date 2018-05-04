@@ -1,11 +1,11 @@
 from model.train import *
 from data_processing.process import *
+from nltk.translate.bleu_score import sentence_bleu
 
 import random
 
-
 def evaluate(encoder, decoder, sentence, max_length=MAX_LENGTH):
-    input_tensor = tensor_from_sentence(input_lang, sentence)
+    input_tensor = variable_from_sentence(input_lang, sentence)
     input_length = input_tensor.size()[0]
     encoder_hidden = encoder.init_hidden()
 
@@ -41,7 +41,7 @@ def evaluate(encoder, decoder, sentence, max_length=MAX_LENGTH):
     return decoded_words, decoder_attentions[:di+1]
 
 
-def evaluate_randomly(encoder, decoder, n=10):
+def evaluate_randomly(encoder, decoder, n=25):
     for i in range(n):
         pair = random.choice(pairs)
         print('>', pair[0])
@@ -49,6 +49,7 @@ def evaluate_randomly(encoder, decoder, n=10):
         output_words, attentions = evaluate(encoder, decoder, pair[0])
         output_sentence = ' '.join(output_words)
         print('<', output_sentence)
+        print(sentence_bleu([pair[1]], [output_words]))
         print('')
 
 

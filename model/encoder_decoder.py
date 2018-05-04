@@ -36,14 +36,14 @@ class EncoderRNN(nn.Module):
 
 class AttentionDecoderRNN(nn.Module):
     """
-    We use an Attention in order to allow the Decoder network to "focus" on a different part of the encoder's outputs
+    We use Attention in order to allow the decoder network to "focus" on a different part of the encoder's outputs
     for every step of the decoder's own outputs.
 
     First we calculate the attention weights with a feed-forward layer (attn) using the decoder's input and hidden state
     as inputs. To create and train this layer we have to choose a maximum sentence length because the sentences in the
     data all have different lengths.
 
-    Then we multiply the attention weigts by the encoder output vectors to create a weighted combination. The result
+    Then we multiply the attention weights by the encoder output vectors to create a weighted combination. The result
     (attn_applied) should contain information about that specific part of the input sequence and help the decoder choose
     the right output words
 

@@ -44,7 +44,7 @@ def train(input_tensor, target_tensor, encoder, decoder, encoder_optimizer, deco
     use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
     if use_teacher_forcing:
-        # Teacher forcing: Feed the target as the next input
+        # Teacher forcing: Feed the next target word as the next input
         for di in range(target_length):
             decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
             loss += criterion(decoder_output, target_tensor[di])
@@ -85,7 +85,7 @@ def time_since(since, percent):
     return '%s (- %s)' % (as_minutes(s), as_minutes(rs))
 
 
-def train_iters(pairs, input_lang, output_lang, encoder, decoder, num_iters, print_every=1000, plot_every=100, learning_rate = 0.01):
+def train_iters(pairs, input_lang, output_lang, encoder, decoder, num_iters, print_every=1000, plot_every=100, learning_rate = 0.001):
     start = time.time()
     plot_losses = []
     print_loss_total = 0  # Resets every print_every
@@ -93,7 +93,7 @@ def train_iters(pairs, input_lang, output_lang, encoder, decoder, num_iters, pri
 
     encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
-    training_pairs = [tensor_from_pair(random.choice(pairs), input_lang, output_lang) for i in range(num_iters)]
+    training_pairs = [variable_from_pair(random.choice(pairs), input_lang, output_lang) for i in range(num_iters)]
     criterion = nn.NLLLoss()  # Negative Log Likelihood Loss
     # https://github.com/pytorch/pytorch/blob/master/torch/nn/modules/loss.py?hl=64#L64
 
